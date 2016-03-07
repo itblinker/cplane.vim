@@ -9,5 +9,6 @@ if exists("b:undo_ftplugin")
 endif
 
 " Path to the dictionary (this path might need adjustment)
-" Set manually with: setlocal dict=~\path\to\ttcn.dict
 let &dict=expand("<sfile>:p:h") . "\..\dicts\ttcn.dict"
+
+noremap <buffer> <C-]> :<C-u>UniteWithCursorWord -immediately tag<CR>nn
