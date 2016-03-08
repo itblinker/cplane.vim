@@ -7,5 +7,3 @@ if exists("b:undo_ftplugin")
 	let b:undo_ftplugin = "setlocal fo< com< tw< commentstring<"
 		\ . "| unlet b:match_ignorecase b:match_words b:match_skip"
 endif
-
-noremap <buffer> <C-]> :<C-u>UniteWithCursorWord -immediately tag<CR>nn
