@@ -12,4 +12,9 @@ let g:cplane_component_database =  [ {'name': 'rrom', 'sct_top_dir': 'RROM', 'sc
                                    \ {'name': 'mcec', 'sct_top_dir': 'MCEC', 'sct_script': 'sct_mcec.sh'}
                                    \ ]
 
+let g:cplane_local_sct_script_relative_top_path = '/lteTools/scbm/bin/'
+let g:cplane_local_sct_script_command_compile = ' k3conly'
+let g:cplane_local_sct_script_command_run = '-keeplogs -keep3klog -logdir'
 
+let g:cplane_sct_variants = ['fsmr3', 'fsmr4', 'fzc', 'fzm', 'tddfsmr3', 'tddfsmr4', 'tddfzc', 'tddfzm' ]
+let g:cplane_sct_current_variant = 'fsmr3'
