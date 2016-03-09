@@ -1,21 +1,29 @@
-function cplane#CompileTestcase()
+function cplane#CompileTestcaseFromCursorLine()
     let l:splittedCurrentLine = split(getline('.'))
 
-    if(len(l:splittedCurrentLine) >= 2)
-        if(l:splittedCurrentLine[0] == 'testcase')
-
-            echomsg 'compilation: '.cplane#GetCompilationCommand()
-            echomsg 'run: '.cplane#GetRunCommand()
-        else
-            call cplane#InfoAboutNotValidLine()
-        endif
+    if( (len(l:splittedCurrentLine) >= 2) && (l:splittedCurrentLine[0] == 'testcase') )
+        call cplane#Compile()
     else
-        call cplane#InfoAboutNotValidLine()
+        echo 'TTCN Compilation cann''t be started - put cursor on line with testcase name'
     endif
 endfunction
 
+function cplane#Compile()
+    call cplane#BackupCompilatinCommand()
+    call cplane#ReCompileBackupedTestCase()
+endfunction
+
+function cplane#BackupCompilatinCommand()
+    let g:cplane_last_compilation_command = cplane#GetCompilationCommand()
+endfunction
+
+function cplane#PrintBackupedCompilationCommand()
+    echo 'ttcn#cplane: last compilation command is: '.g:cplane_last_compilation_command
+endfunction
+
 function cplane#GetTestCaseName()
-    return expand('<cword>')
+    let l:testCaseNameFunction = split(getline('.'))[1]
+    return strpart(l:testCaseNameFunction, 0, len(l:testCaseNameFunction) - 2)
 endfunction
 
 function cplane#GetTtcnBin()
@@ -39,10 +47,6 @@ function cplane#GetComponentSpecificScriptName()
     endfor
 endfunction
 
-function cplane#InfoAboutNotValidLine()
-    echomsg 'TTCN Compilation cann''t be started - move cursor on testcase name'
-endfunction
-
 function cplane#GetCompilationCommand()
     return 'Dispatch '.cplane#GetTtcnBin().' -tcs '.cplane#GetTestCaseName().' -basket ALL -k3conly -variant '.g:cplane_sct_current_variant
 endfunction
@@ -51,11 +55,11 @@ function cplane#GetRunCommand()
     return 'Dispatch '.cplane#GetTtcnBin().' -tcs '.cplane#GetTestCaseName().' -basket ALL -keeplogs -keepk3log -variant '.g:cplane_sct_current_variant.' -logdir '.cplane#GetLogsDir()
 endfunction
 
-function cplane#CompileLastTestCase()
+function cplane#ReCompileBackupedTestCase()
     if(len(g:cplane_last_compilation_command))
-        execute g:cplane_last_compilation_command
+        execute 'silent! 'g:cplane_last_compilation_command
     else
-        echomsg 'there isn''t any valid last compilation command'
+        echo 'there isn''t any valid last compilation command'
     endif
 endfunction
 
@@ -63,14 +67,6 @@ function cplane#RunLastTestCase()
     if(len(g:cplane_last_run_command))
         execute g:cplane_last_run_command
     else
-        echomsg 'there isn''t any valid last run command'
+        echo 'there isn''t any valid last run command'
     endif
-endfunction
-
-function cplane#CheckCommand()
-    try
-        call maktaba#error#TryCommand('echomsg ''msg''', ['WrongType'])
-    catch
-        echomsg 'non try'
-    endtry
 endfunction
